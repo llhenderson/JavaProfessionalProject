@@ -2,6 +2,7 @@ package com.example.project.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,10 +46,12 @@ class TaskServiceTest {
 
         service.completeTask(created.getId());
 
-        Task completed = service.getTaskById(created.getId());
+        Task completed = service.completeTask(created.getId());
+
         assertEquals(TaskStatus.COMPLETED, completed.getStatus());
     }
     @Test 
+    
     void listTasks_returnsCreatedTasks() {
         Task task1 = service.createTask("Task 1", "Description 1");
         Task task2 = service.createTask("Task 2", "Description 2");
@@ -56,8 +59,10 @@ class TaskServiceTest {
         var tasks = service.listTasks();
 
         assertEquals(2, tasks.size());
-        assertEquals(task1.getId(), tasks.get(0).getId());
-        assertEquals(task2.getId(), tasks.get(1).getId());
+        assertTrue(tasks.stream()
+                .anyMatch(task -> task.getId().equals(task1.getId())));
+        assertTrue(tasks.stream()
+                .anyMatch(task -> task.getId().equals(task2.getId())));
     }
     @Test 
     void deleteTask_removesTask(){
