@@ -1,48 +1,97 @@
 package com.example.project.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.example.project.model.Task;
 import com.example.project.model.TaskStatus;
 import com.example.project.repository.InMemoryTaskRepository;
 
-import java.util.List;
-import java.util.Objects;
+class TaskServiceTest {
 
-public class TaskServiceTest {
-    public static void main(String[] args) {
-        TaskService service = new TaskService(new InMemoryTaskRepository());
+    private TaskService service;
 
-        Task created = service.createTask("Write report", "Finish the quarterly summary");
-        assertTrue(created.getStatus() == TaskStatus.PENDING, "New tasks should start as pending");
-        assertEquals("Write report", created.getTitle(), "Title should be preserved");
-
-        Task completed = service.completeTask(created.getId());
-        assertTrue(completed.getStatus() == TaskStatus.COMPLETED, "Completed task should be marked done");
-
-        List<Task> tasks = service.listTasks();
-        assertEquals(1, tasks.size(), "One task should be stored after creation");
-
-        service.deleteTask(created.getId());
-        assertEquals(0, service.listTasks().size(), "Task should be removed after deletion");
-
-        try {
-            service.completeTask("missing-id");
-            throw new AssertionError("Missing task should throw an exception");
-        } catch (IllegalArgumentException expected) {
-            // expected
-        }
-
-        System.out.println("All TaskService tests passed.");
+    @BeforeEach
+    void setUp() {
+        service = new TaskService(new InMemoryTaskRepository());
     }
 
-    private static void assertTrue(boolean condition, String message) {
-        if (!condition) {
-            throw new AssertionError(message);
-        }
+    @Test
+    void createTask_startsAsPending() {
+        Task created = service.createTask(
+                "Write report",
+                "Finish the quarterly summary"
+        );
+
+        assertEquals(TaskStatus.PENDING, created.getStatus());
+    }
+    @Test
+    void createTask_preservesProvidedTitleAndDescription() {
+        String title = "Write report";
+        String description = "Finish the quarterly summary"; 
+
+        Task created = service.createTask(title, description);
+        assertEquals(title, created.getTitle());
+        assertEquals(description, created.getDescription());
+    }
+    @Test 
+    void completeTask_marksTaskAsCompleted() {
+        Task created = service.createTask(
+                "Write report",
+                "Finish the quarterly summary"
+        );
+
+        service.completeTask(created.getId());
+
+        Task completed = service.getTaskById(created.getId());
+        assertEquals(TaskStatus.COMPLETED, completed.getStatus());
+    }
+    @Test 
+    void listTasks_returnsCreatedTasks() {
+        Task task1 = service.createTask("Task 1", "Description 1");
+        Task task2 = service.createTask("Task 2", "Description 2");
+
+        var tasks = service.listTasks();
+
+        assertEquals(2, tasks.size());
+        assertEquals(task1.getId(), tasks.get(0).getId());
+        assertEquals(task2.getId(), tasks.get(1).getId());
+    }
+    @Test 
+    void deleteTask_removesTask(){
+        Task task = service.createTask("Task to delete", "Decsprition");
+        service.deleteTask(task.getId());
+        assertEquals(0,service.listTasks().size());
+    }
+    @Test
+    void createTask_withBlankTitle_throwsIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.createTask("", "Description")
+        );
+
+        assertEquals("Title must not be blank", exception.getMessage());
     }
 
-    private static void assertEquals(Object expected, Object actual, String message) {
-        if (!Objects.equals(expected, actual)) {
-            throw new AssertionError(message + " Expected=" + expected + " Actual=" + actual);
-        }
+    @Test
+    void createTask_withNullTitle_throwsIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.createTask(null, "Description")
+        );
+
+        assertEquals("Title must not be blank", exception.getMessage());
+    }
+
+    @Test
+    void completeTask_withUnknownId_throwsIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.completeTask("missing-id")
+        );
+
+        assertEquals("Task not found: missing-id", exception.getMessage());
     }
 }
