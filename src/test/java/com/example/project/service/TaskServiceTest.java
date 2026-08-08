@@ -44,8 +44,6 @@ class TaskServiceTest {
                 "Finish the quarterly summary"
         );
 
-        service.completeTask(created.getId());
-
         Task completed = service.completeTask(created.getId());
 
         assertEquals(TaskStatus.COMPLETED, completed.getStatus());

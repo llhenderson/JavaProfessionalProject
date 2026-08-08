@@ -12,10 +12,7 @@ public class TaskService {
     public TaskService(TaskRepository repository) {
         this.repository = repository;
     }
-    public Task getTaskById(String id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
-    }
+
     public Task createTask(String title, String description) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException("Title must not be blank");
