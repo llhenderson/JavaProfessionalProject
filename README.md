@@ -13,3 +13,8 @@ On Windows PowerShell:
 ```powershell
 .\mvnw.cmd clean verify
 ```
+
+## Project documentation
+
+- [MVP requirements](docs/requirements.md)
+- [Task lifecycle decision](docs/adr/0001-task-lifecycle.md)
