@@ -63,9 +63,10 @@ class TaskServiceTest {
             tasks.stream().map(Task::getId).toList()
         );
     }
+
     @Test 
     void deleteTask_removesTask(){
-        Task task = service.createTask("Task to delete", "Decsprition");
+        Task task = service.createTask("Task to delete", "Description");
         service.deleteTask(task.getId());
         assertEquals(0,service.listTasks().size());
     }
@@ -114,7 +115,7 @@ class TaskServiceTest {
         );
         assertEquals("", created.getDescription());
     }
-    @Test 
+    @Test
     void completeTask_isIdempotent() {
         Task created = service.createTask(
             "Write report",
@@ -126,7 +127,7 @@ class TaskServiceTest {
         assertEquals(TaskStatus.COMPLETED, completed1.getStatus());
         assertEquals(TaskStatus.COMPLETED, completed2.getStatus());
     }
-    @Test 
+    @Test
     void deleteTask_withUnknownId_throwsIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
@@ -135,5 +136,4 @@ class TaskServiceTest {
 
         assertEquals("Task not found: missing-id", exception.getMessage());
     }
-    
 }
