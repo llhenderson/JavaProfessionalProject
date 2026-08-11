@@ -92,7 +92,7 @@ class TaskServiceTest {
     }
 
     @Test
-    void completeTask_withUnknownId_throwsIllegalArgumentException() {
+    void completeTask_withUnknownId_throwsTaskNotFoundException() {
         TaskNotFoundException exception = assertThrows(
                 TaskNotFoundException.class,
                 () -> service.completeTask("missing-id")
@@ -129,7 +129,7 @@ class TaskServiceTest {
         assertEquals(TaskStatus.COMPLETED, completed2.getStatus());
     }
     @Test
-    void deleteTask_withUnknownId_throwsIllegalArgumentException() {
+    void deleteTask_withUnknownId_throwsTaskNotFoundException() {
         TaskNotFoundException exception = assertThrows(
                 TaskNotFoundException.class,
                 () -> service.deleteTask("missing-id")
