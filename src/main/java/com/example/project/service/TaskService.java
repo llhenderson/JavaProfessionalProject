@@ -2,6 +2,7 @@ package com.example.project.service;
 
 import java.util.List;
 
+import com.example.project.exception.TaskNotFoundException;
 import com.example.project.model.Task;
 import com.example.project.repository.TaskRepository;
 
@@ -33,6 +34,6 @@ public class TaskService {
 
     private Task findRequiredTask(String id) {
         return repository.findById(id)
-        .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+        .orElseThrow(() -> new TaskNotFoundException(id));
     }
 }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.example.project.exception.TaskNotFoundException;
 import com.example.project.model.Task;
 import com.example.project.model.TaskStatus;
 import com.example.project.repository.InMemoryTaskRepository;
@@ -92,8 +93,8 @@ class TaskServiceTest {
 
     @Test
     void completeTask_withUnknownId_throwsIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        TaskNotFoundException exception = assertThrows(
+                TaskNotFoundException.class,
                 () -> service.completeTask("missing-id")
         );
 
@@ -129,8 +130,8 @@ class TaskServiceTest {
     }
     @Test
     void deleteTask_withUnknownId_throwsIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        TaskNotFoundException exception = assertThrows(
+                TaskNotFoundException.class,
                 () -> service.deleteTask("missing-id")
         );
 
