@@ -10,11 +10,21 @@ public class Task {
 
     public Task(String title, String description) {
         this.id = UUID.randomUUID().toString();
-        this.title = title;
-        this.description = description;
+        this.title = normalizeTitle(title);
+        this.description = description == null ? "" : description;
         this.status = TaskStatus.PENDING;
     }
 
+    private static String normalizeTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new IllegalArgumentException("Title must not be blank");
+        }
+        return title.strip();
+    }
+
+    public void complete() {
+        this.status = TaskStatus.COMPLETED;
+    }
     public String getId() {
         return id;
     }
@@ -31,7 +41,5 @@ public class Task {
         return status;
     }
 
-    public void setStatus(TaskStatus status) {
-        this.status = status;
-    }
+
 }

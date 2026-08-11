@@ -1,8 +1,9 @@
 package com.example.project.service;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -57,10 +58,10 @@ class TaskServiceTest {
         var tasks = service.listTasks();
 
         assertEquals(2, tasks.size());
-        assertTrue(tasks.stream()
-                .anyMatch(task -> task.getId().equals(task1.getId())));
-        assertTrue(tasks.stream()
-                .anyMatch(task -> task.getId().equals(task2.getId())));
+        assertEquals(
+            List.of(task1.getId(), task2.getId()),
+            tasks.stream().map(Task::getId).toList()
+        );
     }
     @Test 
     void deleteTask_removesTask(){
@@ -72,7 +73,7 @@ class TaskServiceTest {
     void createTask_withBlankTitle_throwsIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> service.createTask("", "Description")
+                () -> service.createTask(" ", "Description")
         );
 
         assertEquals("Title must not be blank", exception.getMessage());
@@ -97,4 +98,42 @@ class TaskServiceTest {
 
         assertEquals("Task not found: missing-id", exception.getMessage());
     }
+    @Test
+    void createTask_trimsTitle() {
+        Task created = service.createTask(
+            "   Write report   ",
+            "Finish the quarterly summary"
+        );
+        assertEquals("Write report", created.getTitle());
+    }
+    @Test
+    void createTask_withNullDescription_usesEmptyDescription() {
+        Task created = service.createTask(
+            "Write report",
+            null
+        );
+        assertEquals("", created.getDescription());
+    }
+    @Test 
+    void completeTask_isIdempotent() {
+        Task created = service.createTask(
+            "Write report",
+            "Finish the quarterly summary"
+        );
+        Task completed1 = service.completeTask(created.getId());
+        Task completed2 = service.completeTask(created.getId());
+
+        assertEquals(TaskStatus.COMPLETED, completed1.getStatus());
+        assertEquals(TaskStatus.COMPLETED, completed2.getStatus());
+    }
+    @Test 
+    void deleteTask_withUnknownId_throwsIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.deleteTask("missing-id")
+        );
+
+        assertEquals("Task not found: missing-id", exception.getMessage());
+    }
+    
 }
