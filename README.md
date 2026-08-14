@@ -12,9 +12,16 @@ On Windows PowerShell:
 
 ```powershell
 .\mvnw.cmd clean verify
-```
+
 
 ## Project documentation
 
 - [MVP requirements](docs/requirements.md)
 - [Task lifecycle decision](docs/adr/0001-task-lifecycle.md)
+- [Service error contract](docs/adr/0002-service-error-contract.md)
+
+## Run the console application
+
+```powershell
+.\mvnw.cmd compile
+java -cp target\classes com.example.project.Main

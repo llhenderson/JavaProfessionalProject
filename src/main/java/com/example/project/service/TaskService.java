@@ -34,6 +34,6 @@ public class TaskService {
 
     private Task findRequiredTask(String id) {
         return repository.findById(id)
-        .orElseThrow(() -> new TaskNotFoundException(id));
+            .orElseThrow(() -> new TaskNotFoundException(id));
     }
 }
