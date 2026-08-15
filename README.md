@@ -23,6 +23,6 @@ On Windows PowerShell:
 ## Run the console application
 
 ```powershell
-.\mvnw.cmd compile
-java -cp target\classes com.example.project.Main
+.\mvnw.cmd clean package
+java -jar target\java-professional-project-1.0-SNAPSHOT.jar
 ```
