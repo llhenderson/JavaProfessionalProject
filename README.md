@@ -12,7 +12,7 @@ On Windows PowerShell:
 
 ```powershell
 .\mvnw.cmd clean verify
-
+```
 
 ## Project documentation
 
@@ -25,3 +25,4 @@ On Windows PowerShell:
 ```powershell
 .\mvnw.cmd compile
 java -cp target\classes com.example.project.Main
+```
