@@ -31,5 +31,5 @@ The build requires at least 90% line coverage and 90% branch coverage.
 
 ```powershell
 .\mvnw.cmd clean package
-java -jar target\java-professional-project-1.0-SNAPSHOT.jar
+java -jar target\java-professional-project-1.0.0.jar
 ```
