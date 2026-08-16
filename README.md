@@ -13,6 +13,13 @@ On Windows PowerShell:
 ```powershell
 .\mvnw.cmd clean verify
 ```
+## Test coverage
+
+Running `.\mvnw.cmd clean verify` generates a JaCoCo coverage report at:
+
+`target\site\jacoco\index.html`
+
+The build requires at least 90% line coverage and 90% branch coverage.
 
 ## Project documentation
 
